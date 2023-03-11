@@ -10,6 +10,7 @@ namespace Conduit.Infrastructure
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Tag> Tag { get; set; }
         public DbSet<Follow> Follow { get; set; }
+        public DbSet<UserArticle> UserArticle { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -37,6 +38,19 @@ namespace Conduit.Infrastructure
             modelBuilder.Entity<Article>()
                 .HasOne(a => a.User)
                 .WithMany(u => u.Articles);
+
+            modelBuilder.Entity<UserArticle>()
+                .HasKey(f => new { f.ArticleId, f.UserId });
+
+            modelBuilder.Entity<UserArticle>()
+                .HasOne(f => f.Article)
+                .WithMany(a => a.Favorites)
+                .HasForeignKey(f => f.ArticleId);
+
+            modelBuilder.Entity<UserArticle>()
+                .HasOne(f => f.User)
+                .WithMany(u => u.Favorites)
+                .HasForeignKey(f => f.UserId);
         }
     }
 }
