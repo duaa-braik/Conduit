@@ -11,7 +11,7 @@
 
         public IEnumerable<Comment> Comments { get; set; }
         public IEnumerable<Tag> Tags { get; set; }
-        public IEnumerable<User> Users { get; set; }
+        public IEnumerable<UserArticle> Favorites { get; set; }
 
         public DateTime DatePublished { get; set; }
         public DateTime LastModified { get; set; }

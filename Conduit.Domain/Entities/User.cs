@@ -11,6 +11,8 @@
         public IEnumerable<Follow> Followings { get; set; }
         
         public IEnumerable<Article> Articles { get; set; }
-        public IEnumerable<Article> Favorites { get; set; }
+        public IEnumerable<UserArticle> Favorites { get; set; }
+
+        public IEnumerable<Comment> Comments { get; set; }
     }
 }
