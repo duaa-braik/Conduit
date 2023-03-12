@@ -9,9 +9,9 @@
         public int UserId { get; set; }
         public User User { get; set; }
 
-        public IEnumerable<Comment> Comments { get; set; }
-        public IEnumerable<Tag> Tags { get; set; }
-        public IEnumerable<UserArticle> Favorites { get; set; }
+        public ICollection<Comment> Comments { get; set; }
+        public ICollection<Tag> Tags { get; set; }
+        public ICollection<UserArticle> Favorites { get; set; }
 
         public DateTime DatePublished { get; set; }
         public DateTime LastModified { get; set; }

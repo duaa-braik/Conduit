@@ -4,6 +4,6 @@
     {
         public int TagId { get; set; }
         public string TagName { get; set; }
-        public IEnumerable<Article> Articles { get; set; }
+        public ICollection<Article> Articles { get; set; }
     }
 }

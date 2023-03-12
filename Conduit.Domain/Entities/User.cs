@@ -7,12 +7,12 @@
         public string Email { get; set; }
         public string Password { get; set; }
 
-        public IEnumerable<Follow> Followers { get; set; }
-        public IEnumerable<Follow> Followings { get; set; }
+        public ICollection<Follow> Followers { get; set; }
+        public ICollection<Follow> Followings { get; set; }
         
-        public IEnumerable<Article> Articles { get; set; }
-        public IEnumerable<UserArticle> Favorites { get; set; }
+        public ICollection<Article> Articles { get; set; }
+        public ICollection<UserArticle> Favorites { get; set; }
 
-        public IEnumerable<Comment> Comments { get; set; }
+        public ICollection<Comment> Comments { get; set; }
     }
 }
