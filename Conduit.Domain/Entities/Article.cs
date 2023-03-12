@@ -16,5 +16,12 @@
         public DateTime DatePublished { get; set; }
         public DateTime LastModified { get; set; }
 
+        public Article()
+        {
+            Comments = new List<Comment>();
+            Tags = new List<Tag>();
+            Favorites = new List<UserArticle>();
+        }
+
     }
 }

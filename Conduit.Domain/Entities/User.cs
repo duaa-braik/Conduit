@@ -14,5 +14,14 @@
         public ICollection<UserArticle> Favorites { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
+
+        public User()
+        {
+            Followers = new List<Follow>();
+            Followings = new List<Follow>();
+            Articles = new List<Article>();
+            Favorites = new List<UserArticle>();
+            Comments = new List<Comment>();
+        }
     }
 }
