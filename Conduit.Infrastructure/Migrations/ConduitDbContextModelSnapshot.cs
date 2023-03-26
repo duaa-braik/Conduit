@@ -147,6 +147,9 @@ namespace Conduit.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"), 1L, 1);
 
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -224,14 +227,14 @@ namespace Conduit.Infrastructure.Migrations
 
             modelBuilder.Entity("Conduit.Domain.Entities.Follow", b =>
                 {
-                    b.HasOne("Conduit.Domain.Entities.User", "Follower")
-                        .WithMany("Followings")
+                    b.HasOne("Conduit.Domain.Entities.User", "Followee")
+                        .WithMany("Followers")
                         .HasForeignKey("FolloweeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Conduit.Domain.Entities.User", "Followee")
-                        .WithMany("Followers")
+                    b.HasOne("Conduit.Domain.Entities.User", "Follower")
+                        .WithMany("Followings")
                         .HasForeignKey("FollowerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
