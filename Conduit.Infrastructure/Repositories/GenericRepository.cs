@@ -4,19 +4,31 @@ namespace Conduit.Infrastructure.Repositories
 {
     public class GenericRepository<T> : IRepository<T> where T : class
     {
-        public Task<T> CreateAsync(T entity)
+        public readonly ConduitDbContext context;
+
+        public GenericRepository(ConduitDbContext context)
         {
-            throw new NotImplementedException();
+            this.context = context;
         }
 
-        public Task DeleteAsync(T entity)
+        public async Task<T> CreateAsync(T entity)
         {
-            throw new NotImplementedException();
+            context.Set<T>().Add(entity);
+            await context.SaveChangesAsync();
+            return entity;
         }
 
-        public Task<T> UpdateAsync(T entity)
+        public async Task DeleteAsync(T entity)
         {
-            throw new NotImplementedException();
+            context.Set<T>().Remove(entity);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<T> UpdateAsync(T entity)
+        {
+            context.Set<T>().Update(entity);
+            await context.SaveChangesAsync();
+            return entity;
         }
     }
 }
