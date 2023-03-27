@@ -51,5 +51,10 @@ namespace Conduit.Application.Services
 
             return mapper.Map<UserDto>(UserInDatabase);
         }
+
+        public UserAuthenticationDto MapToUserAuthenticationDto(UserDto userDto)
+        {
+            return mapper.Map<UserAuthenticationDto>(userDto);
+        }
     }
 }

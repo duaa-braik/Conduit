@@ -2,6 +2,7 @@
 using Conduit.API.Authentication.Service;
 using Conduit.Application.Interfaces;
 using Conduit.Domain.DTOs;
+using Conduit.Domain.Exceptions;
 using EntityFramework.Exceptions.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -44,6 +45,31 @@ namespace Conduit.API.Controllers
                 return UnprocessableEntity();
             }
             
+        }
+
+        [HttpPost]
+        [Route("login")]
+        public async Task<ActionResult<UserAuthenticationDto>> Login(UserLoginDto userInfo)
+        {
+            try
+            {
+                var UserDto = await userService.Login(userInfo);
+
+                token = tokenGenerator.Generate(UserDto, JwtSettings);
+
+                var User = userService.MapToUserAuthenticationDto(UserDto);
+                User.Token = token;
+
+                return Ok(User);
+            }
+            catch (AccountDoesNotExistException)
+            {
+                return Unauthorized();
+            }
+            catch (WrongPasswordException)
+            {
+                return Unauthorized();
+            }
         }
     }
 }
