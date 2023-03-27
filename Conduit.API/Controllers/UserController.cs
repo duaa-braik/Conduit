@@ -31,45 +31,26 @@ namespace Conduit.API.Controllers
         [HttpPost]
         public async Task<ActionResult<UserAuthenticationDto>> Register(UserDto userInfo)
         {
-            try
-            {
-                var User = await userService.Register(userInfo);
+            var User = await userService.Register(userInfo);
 
-                token = tokenGenerator.Generate(userInfo, JwtSettings);
-                User.Token = token;
+            token = tokenGenerator.Generate(userInfo, JwtSettings);
+            User.Token = token;
 
-                return CreatedAtRoute("UsersAuthentication", User);
-            }
-            catch (UniqueConstraintException)
-            {
-                return UnprocessableEntity();
-            }
-            
+            return CreatedAtRoute("UsersAuthentication", User);
         }
 
         [HttpPost]
         [Route("login")]
         public async Task<ActionResult<UserAuthenticationDto>> Login(UserLoginDto userInfo)
         {
-            try
-            {
-                var UserDto = await userService.Login(userInfo);
+            var UserDto = await userService.Login(userInfo);
 
-                token = tokenGenerator.Generate(UserDto, JwtSettings);
+            token = tokenGenerator.Generate(UserDto, JwtSettings);
 
-                var User = userService.MapToUserAuthenticationDto(UserDto);
-                User.Token = token;
+            var User = userService.MapToUserAuthenticationDto(UserDto);
+            User.Token = token;
 
-                return Ok(User);
-            }
-            catch (AccountDoesNotExistException)
-            {
-                return Unauthorized();
-            }
-            catch (WrongPasswordException)
-            {
-                return Unauthorized();
-            }
+            return Ok(User);
         }
     }
 }
