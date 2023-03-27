@@ -4,6 +4,7 @@ using Conduit.Infrastructure.Repositories;
 using Conduit.Domain.Interfaces;
 using Conduit.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using EntityFramework.Exceptions.SqlServer;
 
 namespace Conduit.API.Extensions
 {
@@ -22,7 +23,8 @@ namespace Conduit.API.Extensions
         {
             services.AddDbContext<ConduitDbContext>(
                 options => options.UseSqlServer(
-                    builder.Configuration["ConnectionString"]));
+                    builder.Configuration["ConnectionString"])
+                .UseExceptionProcessor());
             return services;
 
         }
