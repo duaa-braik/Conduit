@@ -8,10 +8,10 @@ namespace Conduit.Application.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUserRpository userRepository;
+        private readonly IUserRepository userRepository;
         private readonly IMapper mapper;
 
-        public UserService(IUserRpository userRepository, IMapper mapper)
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
             this.userRepository = userRepository;
             this.mapper = mapper;

@@ -1,3 +1,5 @@
+using Conduit.API.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var Services = builder.Services;
@@ -5,6 +7,10 @@ var Services = builder.Services;
 // Add services to the container.
 
 Services.AddControllers();
+
+Services.AddServices();
+
+Services.AddDbContext(builder);
 
 var app = builder.Build();
 

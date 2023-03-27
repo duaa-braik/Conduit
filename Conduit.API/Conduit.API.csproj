@@ -7,15 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllerd\**" />
+    <Content Remove="Controllerd\**" />
+    <EmbeddedResource Remove="Controllerd\**" />
+    <None Remove="Controllerd\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.15" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Conduit.Application\Conduit.Application.csproj" />
     <ProjectReference Include="..\Conduit.Domain\Conduit.Domain.csproj" />
+    <ProjectReference Include="..\Conduit.Infrastructure\Conduit.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllerd\" />
     <Folder Include="Controllers\" />
   </ItemGroup>
 

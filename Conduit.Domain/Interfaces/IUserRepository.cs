@@ -2,7 +2,7 @@
 
 namespace Conduit.Domain.Interfaces
 {
-    public interface IUserRpository : IRepository<User>
+    public interface IUserRepository : IRepository<User>
     {
     }
 }
