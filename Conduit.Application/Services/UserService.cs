@@ -1,14 +1,23 @@
-﻿using Conduit.Domain.Interfaces;
+﻿using AutoMapper;
+using Conduit.Domain.DTOs;
+using Conduit.Domain.Interfaces;
 
 namespace Conduit.Application.Services
 {
     public class UserService
     {
         private readonly IUserRpository userRepository;
+        private readonly IMapper mapper;
 
-        public UserService(IUserRpository userRepository)
+        public UserService(IUserRpository userRepository, IMapper mapper)
         {
             this.userRepository = userRepository;
+            this.mapper = mapper;
+        }
+
+        public Task<UserAuthenticationDto> Register(UserDto user)
+        {
+            
         }
     }
 }
