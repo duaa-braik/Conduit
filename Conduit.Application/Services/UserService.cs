@@ -2,6 +2,7 @@
 using Conduit.Application.Interfaces;
 using Conduit.Domain.DTOs;
 using Conduit.Domain.Entities;
+using Conduit.Domain.Exceptions;
 using Conduit.Domain.Interfaces;
 
 namespace Conduit.Application.Services
@@ -32,13 +33,20 @@ namespace Conduit.Application.Services
             string Password = userLoginInfo.Password;
 
             User UserInDatabase;
-            UserInDatabase = await userRepository.GetUserByEmail(Email);
+            try
+            {
+                UserInDatabase = await userRepository.GetUserByEmail(Email);
+            }
+            catch (Exception)
+            {
+                throw new LoginFailureException("This account doesn't exist");
+            }
             
             bool isVerifiedUser = UserInDatabase.Password == Password;
 
             if (!isVerifiedUser)
             {
-
+                throw new LoginFailureException("Wrong password");
             }
 
             return mapper.Map<UserDto>(UserInDatabase);
