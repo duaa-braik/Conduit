@@ -1,4 +1,4 @@
-﻿namespace Conduit.Application.Services
+﻿namespace Conduit.Domain.DTOs
 {
     public class UserAuthenticationDto
     {

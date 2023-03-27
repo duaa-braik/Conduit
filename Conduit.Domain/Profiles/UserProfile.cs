@@ -9,6 +9,7 @@ namespace Conduit.Domain.Profiles
         public UserProfile()
         {
             CreateMap<UserDto, User>();
+            CreateMap<User, UserAuthenticationDto>();
         }
     }
 }

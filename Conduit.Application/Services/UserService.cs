@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Conduit.Domain.DTOs;
+using Conduit.Domain.Entities;
 using Conduit.Domain.Interfaces;
 
 namespace Conduit.Application.Services
@@ -15,9 +16,13 @@ namespace Conduit.Application.Services
             this.mapper = mapper;
         }
 
-        public Task<UserAuthenticationDto> Register(UserDto user)
+        public async Task<UserAuthenticationDto> Register(UserDto userRegistrationInfo)
         {
-            
+            User User = mapper.Map<User>(userRegistrationInfo);
+
+            User = await userRepository.CreateAsync(User);
+
+            return mapper.Map<UserAuthenticationDto>(User);
         }
     }
 }
