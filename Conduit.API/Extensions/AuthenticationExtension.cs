@@ -1,4 +1,5 @@
 ﻿using Conduit.API.Authentication;
+using Conduit.API.Authentication.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -27,6 +28,7 @@ namespace Conduit.API.Extensions
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(jwtSettings.Secret)),
                 });
+            services.AddScoped<ITokenGenerator, TokenGenerator>();
             return services;
         }
     }
