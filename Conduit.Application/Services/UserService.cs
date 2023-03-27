@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
+using Conduit.Application.Interfaces;
 using Conduit.Domain.DTOs;
 using Conduit.Domain.Entities;
 using Conduit.Domain.Interfaces;
 
 namespace Conduit.Application.Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
         private readonly IUserRpository userRepository;
         private readonly IMapper mapper;
