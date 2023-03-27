@@ -25,5 +25,23 @@ namespace Conduit.Application.Services
 
             return mapper.Map<UserAuthenticationDto>(User);
         }
+
+        public async Task<UserDto> Login(UserLoginDto userLoginInfo)
+        {
+            string Email = userLoginInfo.Email;
+            string Password = userLoginInfo.Password;
+
+            User UserInDatabase;
+            UserInDatabase = await userRepository.GetUserByEmail(Email);
+            
+            bool isVerifiedUser = UserInDatabase.Password == Password;
+
+            if (!isVerifiedUser)
+            {
+
+            }
+
+            return mapper.Map<UserDto>(UserInDatabase);
+        }
     }
 }
