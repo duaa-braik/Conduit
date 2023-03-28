@@ -67,8 +67,21 @@ namespace Conduit.API.Controllers
             token = Request.Headers.Authorization.ToString().Split(" ").Last();
             CurrentUser.Token = token;
 
-            return CurrentUser;
+            return Ok(CurrentUser);
             
+        }
+
+        [HttpPut]
+        [Authorize]
+        [Route("user")]
+        public async Task<ActionResult<UserAuthenticationDto>> UpdateUser(UserUpdateDto userUpdates)
+        {
+            var CurrentUserEmail = User.Claims.First(claim => claim.Type == "Email").Value;
+
+            var UserAfterUpdates = await userService.UpdateUser(userUpdates, CurrentUserEmail);
+
+            return Ok(UserAfterUpdates);
+
         }
     }
 }
