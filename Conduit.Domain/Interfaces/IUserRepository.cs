@@ -6,5 +6,6 @@ namespace Conduit.Domain.Interfaces
     {
         Task<User> GetUserByEmail(string email);
         Task<User> GetUserByUsername(string username);
+        Task<User> GetUserWithFollowings(string Username);
     }
 }
