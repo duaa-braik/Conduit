@@ -2,6 +2,7 @@
 using Conduit.Application.Interfaces;
 using Conduit.Domain.DTOs;
 using Conduit.Domain.Entities;
+using Conduit.Domain.Exceptions;
 using Conduit.Domain.Interfaces;
 
 namespace Conduit.Application.Services
@@ -49,6 +50,11 @@ namespace Conduit.Application.Services
         public async Task<UserProfileDto> FollowUser(string Username, string CurrentUserName)
         {
             var Users = await GetUsers(Username, CurrentUserName);
+
+            if (Users.IsFollowing)
+            {
+                throw new FollowStatusMatchException("You already follow this user");
+            }
 
             var FollowedUser = await userRepository.FollowUser(Users.Followee, Users.Follower);
 
