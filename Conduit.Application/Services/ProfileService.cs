@@ -65,6 +65,22 @@ namespace Conduit.Application.Services
 
         }
 
+        public async Task<UserProfileDto> UnFollowUser(string Username, string CurrentUserName)
+        {
+            var Users = await GetUsers(Username, CurrentUserName);
+
+            if (!Users.IsFollowing)
+            {
+                throw new FollowStatusMatchException("You don't follow this user");
+            }
+            var UnFollowedUser = await userRepository.UnFollowUser(Users.Followee, Users.Follower);
+
+            var UnFollowedUserProfile = mapper.Map<UserProfileDto>(UnFollowedUser);
+            UnFollowedUserProfile.Following = false;
+
+            return UnFollowedUserProfile;
+        }
+
         private async Task<UsersRelationship> GetUsers(string FolloweeName, string FollowerName)
         {
             var User = await userRepository.GetUserByUsername(FolloweeName);

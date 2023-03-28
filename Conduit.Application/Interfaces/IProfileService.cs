@@ -8,5 +8,6 @@ namespace Conduit.Application.Interfaces
         Task<UserProfileDto> FollowUser(string Username, string CurrentUserName);
         Task<UserProfileDto> GetUserProfile(string Username);
         Task<UserProfileDto> GetUserProfile(string Username, string CurrentUserName);
+        Task<UserProfileDto> UnFollowUser(string Username, string CurrentUserName);
     }
 }

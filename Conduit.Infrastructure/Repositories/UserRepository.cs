@@ -36,5 +36,13 @@ namespace Conduit.Infrastructure.Repositories
             await context.SaveChangesAsync();
             return userToFollow;
         }
+
+        public async Task<User> UnFollowUser(User userToUnFollow, User CurrentUser)
+        {
+            var FollowRelation = CurrentUser.Followings.FirstOrDefault(f => f.Followee == userToUnFollow);
+            CurrentUser.Followings.Remove(FollowRelation);
+            await context.SaveChangesAsync();
+            return userToUnFollow;
+        }
     }
 }
