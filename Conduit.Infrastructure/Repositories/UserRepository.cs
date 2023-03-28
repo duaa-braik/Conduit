@@ -24,5 +24,17 @@ namespace Conduit.Infrastructure.Repositories
                 .Include(user => user.Followings)
                 .FirstAsync(user => user.Username == Username);
         }
+
+        public async Task<User> FollowUser(User userToFollow, User CurrentUser)
+        {
+            CurrentUser.Followings.Add(new Follow
+            {
+                Followee = userToFollow,
+                Follower = CurrentUser
+            });
+
+            await context.SaveChangesAsync();
+            return userToFollow;
+        }
     }
 }

@@ -46,6 +46,19 @@ namespace Conduit.Application.Services
             return UserProfile;
         }
 
+        public async Task<UserProfileDto> FollowUser(string Username, string CurrentUserName)
+        {
+            var Users = await GetUsers(Username, CurrentUserName);
+
+            var FollowedUser = await userRepository.FollowUser(Users.Followee, Users.Follower);
+
+            var FollowedUserProfile = mapper.Map<UserProfileDto>(FollowedUser);
+            FollowedUserProfile.Following = true;
+
+            return FollowedUserProfile;
+
+        }
+
         private async Task<UsersRelationship> GetUsers(string FolloweeName, string FollowerName)
         {
             var User = await userRepository.GetUserByUsername(FolloweeName);
