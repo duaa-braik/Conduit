@@ -10,8 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Conduit.API.Controllers
 {
     [ApiController]
-    [AllowAnonymous]
-    [Route("/api/users", Name = "UsersAuthentication")]
+    [Route("/api")]
     public class UserController : ControllerBase
     {
         private readonly IUserService userService;
@@ -29,6 +28,8 @@ namespace Conduit.API.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
+        [Route("users", Name = "UsersAuthentication")]
         public async Task<ActionResult<UserAuthenticationDto>> Register(UserDto userInfo)
         {
             var User = await userService.Register(userInfo);
@@ -40,7 +41,8 @@ namespace Conduit.API.Controllers
         }
 
         [HttpPost]
-        [Route("login")]
+        [AllowAnonymous]
+        [Route("users/login")]
         public async Task<ActionResult<UserAuthenticationDto>> Login(UserLoginDto userInfo)
         {
             var UserDto = await userService.Login(userInfo);
@@ -51,6 +53,22 @@ namespace Conduit.API.Controllers
             User.Token = token;
 
             return Ok(User);
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("user")]
+        public async Task<ActionResult<UserAuthenticationDto>> GetCurrentUser()
+        {
+            var CurrentUserEmail = User.Claims.First(claim => claim.Type == "Email").Value;
+
+            var CurrentUser = await userService.GetCurrentUser(CurrentUserEmail);
+
+            token = Request.Headers.Authorization.ToString().Split(" ").Last();
+            CurrentUser.Token = token;
+
+            return CurrentUser;
+            
         }
     }
 }
