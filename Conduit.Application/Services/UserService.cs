@@ -63,5 +63,16 @@ namespace Conduit.Application.Services
 
             return mapper.Map<UserAuthenticationDto>(CurrentUser);
         }
+
+        public async Task<UserAuthenticationDto> UpdateUser(UserUpdateDto userUpdates, string Email)
+        {
+            var User = await userRepository.GetUserByEmail(Email);
+
+            mapper.Map(userUpdates, User);
+
+            var UserAfterUpdates = await userRepository.UpdateAsync(User);
+
+            return mapper.Map<UserAuthenticationDto>(UserAfterUpdates);
+        }
     }
 }

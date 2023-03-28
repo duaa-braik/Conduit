@@ -8,5 +8,6 @@ namespace Conduit.Application.Interfaces
         Task<UserDto> Login(UserLoginDto userLoginInfo);
         UserAuthenticationDto MapToUserAuthenticationDto(UserDto userDto);
         Task<UserAuthenticationDto> Register(UserDto userRegistrationInfo);
+        Task<UserAuthenticationDto> UpdateUser(UserUpdateDto userUpdates, string Email);
     }
 }
