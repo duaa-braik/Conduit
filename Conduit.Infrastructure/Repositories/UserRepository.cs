@@ -12,5 +12,10 @@ namespace Conduit.Infrastructure.Repositories
         {
             return await context.User.FirstAsync(user => user.Email == email);
         }
+
+        public Task<User> GetUserByUsername(string username)
+        {
+            return context.User.FirstAsync(user => user.Username == username);
+        }
     }
 }
