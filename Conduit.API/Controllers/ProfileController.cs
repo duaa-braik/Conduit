@@ -35,5 +35,19 @@ namespace Conduit.API.Controllers
             return Ok(UserProfile);
         }
 
+        [HttpPost]
+        [Authorize]
+        [Route("{Username}/follow")]
+        public async Task<ActionResult> FollowUser(string Username)
+        {
+            var CurrentUserName = User.Claims.FirstOrDefault(claim => claim.Type == "UserName")!.Value;
+
+            if (Username == CurrentUserName) return BadRequest();
+
+            var FollowedUser = await profileService.FollowUser(Username, CurrentUserName);
+
+            return Ok(FollowedUser);
+        }
+
     }
 }
