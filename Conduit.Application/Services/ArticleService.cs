@@ -22,7 +22,17 @@ namespace Conduit.Application.Services
 
         public async Task<ArticleDto> AddArticle(ArticleCreationDto articleDetails, string Username)
         {
-            
+            User Publisher = await userRepository.GetUserByUsername(Username);
+
+            Article article = mapper.Map<Article>(articleDetails);
+
+            article.User = Publisher;
+
+            await articleRepository.CreateAsync(article);
+
+            ArticleDto articleDto = mapper.Map<ArticleDto>(article);
+
+            return articleDto;
         }
     }
 }
