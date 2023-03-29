@@ -1,4 +1,6 @@
 ﻿using Conduit.Application.Interfaces;
+using Conduit.Domain.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Conduit.API.Controllers
@@ -12,6 +14,17 @@ namespace Conduit.API.Controllers
         public ArticleController(IArticleService articleService)
         {
             this.articleService = articleService;
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<ActionResult<ArticleDto>> AddArticle(ArticleCreationDto article)
+        {
+            var userName = User.Claims.FirstOrDefault(claim => claim.Type == "UserName")!.Value;
+
+            var publishedArticle = await articleService.AddArticle(article, userName);
+
+            return Created($"/api/articles/{publishedArticle.Slug}", publishedArticle);
         }
     }
 }
