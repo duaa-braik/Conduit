@@ -83,18 +83,26 @@ namespace Conduit.Application.Services
 
         private async Task<UsersRelationship> GetUsers(string FolloweeName, string FollowerName)
         {
-            var User = await userRepository.GetUserByUsername(FolloweeName);
-
-            var CurrentUser = await userRepository.GetUserWithFollowings(FollowerName);
-
-            bool isFollowing = CheckFollowStatus(User.UserId, CurrentUser);
-
-            return new UsersRelationship
+            try
             {
-                Followee = User,
-                Follower = CurrentUser,
-                IsFollowing = isFollowing
-            };
+                var User = await userRepository.GetUserByUsername(FolloweeName);
+
+                var CurrentUser = await userRepository.GetUserWithFollowings(FollowerName);
+
+                bool isFollowing = CheckFollowStatus(User.UserId, CurrentUser);
+
+                return new UsersRelationship
+                {
+                    Followee = User,
+                    Follower = CurrentUser,
+                    IsFollowing = isFollowing
+                };
+            }
+            catch (Exception)
+            {
+                throw new NotFoundException("The user you rquested doesn't exist");
+            }
+            
         }
 
         private bool CheckFollowStatus(int userId, User currentUser)
