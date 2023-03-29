@@ -17,6 +17,7 @@ namespace Conduit.API.Extensions
             services.AddScoped<IProfileService, ProfileService>();
             services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IArticleRepository, ArticleRepository>();
+            services.AddScoped<ITagRepository, TagRepository>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             return services;
         }
