@@ -1,4 +1,6 @@
-﻿using FluentValidation.AspNetCore;
+﻿using Conduit.Application.Validators;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 namespace Conduit.API.Extensions
 {
@@ -8,6 +10,9 @@ namespace Conduit.API.Extensions
         {
             services.AddFluentValidationAutoValidation();
             services.AddFluentValidationClientsideAdapters();
+            services.AddValidatorsFromAssemblyContaining<UserValidator>();
+            services.AddValidatorsFromAssemblyContaining<UserLoginDtoValidator>();
+            services.AddValidatorsFromAssemblyContaining<UpdateUserValidator>();
             return services;
         }
     }
