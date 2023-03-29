@@ -15,6 +15,8 @@ Services.AddDbContext(builder);
 
 Services.AddAuth(builder.Configuration);
 
+Services.AddFluentValidation();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
