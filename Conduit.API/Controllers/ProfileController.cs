@@ -49,5 +49,18 @@ namespace Conduit.API.Controllers
             return Ok(FollowedUser);
         }
 
+        [HttpDelete]
+        [Authorize]
+        [Route("{Username}/unfollow")]
+        public async Task<ActionResult<UserProfileDto>> UnFollowUser(string Username)
+        {
+            var CurrentUserName = User.Claims.FirstOrDefault(claim => claim.Type == "UserName")!.Value;
+
+            if (Username == CurrentUserName) return BadRequest();
+
+            var UnFollowedUser = await profileService.UnFollowUser(Username, CurrentUserName);
+
+            return Ok(UnFollowedUser);
+        }
     }
 }
