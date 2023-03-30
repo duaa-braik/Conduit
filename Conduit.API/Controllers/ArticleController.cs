@@ -75,6 +75,16 @@ namespace Conduit.API.Controllers
             return Created("AddComment", addedComment);
         }
 
+        [HttpDelete]
+        [Authorize]
+        [Route("{slug}/comments/{Id}", Name = "DeleteComment")]
+        public async Task<ActionResult> DeleteComment(string slug, int Id)
+        {
+            string userName = GetUserNameClaim().Value;
+            await articleService.DeleteComment(Id, slug, userName);
+            return NoContent();
+        }
+
         private Claim GetUserNameClaim()
         {
             return User.Claims.FirstOrDefault(claim => claim.Type == "UserName");
