@@ -21,6 +21,7 @@ namespace Conduit.Infrastructure.Repositories
             return await context.Article
                 .Include(u => u.User)
                 .Include(u => u.Tags)
+                .Include(u => u.Favorites)
                 .FirstAsync(a => a.Slug == slug);
         }
 
