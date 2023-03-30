@@ -61,6 +61,23 @@ namespace Conduit.Application.Services
             return articleDto;
         }
 
+        public async Task<ArticleDto> UpdateArticle(string slug, ArticleUpdateDto articleUpdates, string CurrentUserName)
+        {
+            Article article = await GetArticle(slug);
+
+            string updatedTitle = articleUpdates.Title;
+
+            article.Title = updatedTitle;
+            article.LastModified = DateTime.UtcNow;
+            article.Slug = updatedTitle.Trim().Replace(" ", "-");
+
+            await articleRepository.UpdateAsync(article);
+
+            ArticleDto articleDto = mapper.Map<ArticleDto>(article);
+
+            return articleDto;
+        }
+
         private void CheckFollowStatusWithPublisher(User currentUser, int publisherId, ArticleDto articleDto)
         {
             bool isFollowing = profileService.CheckFollowStatus(publisherId, currentUser);
