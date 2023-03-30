@@ -65,6 +65,16 @@ namespace Conduit.API.Controllers
             return NoContent();
         }
 
+        [HttpPost]
+        [Authorize]
+        [Route("{slug}/comments", Name = "AddComment")]
+        public async Task<ActionResult> AddComment(string slug, CommentCreationDto comment)
+        {
+            string userName = GetUserNameClaim().Value;
+            var addedComment = await articleService.AddCommentAsync(comment, slug, userName);
+            return Created("AddComment", addedComment);
+        }
+
         private Claim GetUserNameClaim()
         {
             return User.Claims.FirstOrDefault(claim => claim.Type == "UserName");
