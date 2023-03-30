@@ -93,7 +93,7 @@ namespace Conduit.Application.Services
         {
             try
             {
-                return await articleRepository.GetArticleAsync(slug);
+                return await articleRepository.GetArticleWithRelatedDataAsync(slug);
             }
             catch (Exception)
             {
