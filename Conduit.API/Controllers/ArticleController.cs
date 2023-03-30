@@ -55,6 +55,16 @@ namespace Conduit.API.Controllers
             return Ok(a);
         }
 
+        [HttpDelete]
+        [Authorize]
+        [Route("{slug}")]
+        public async Task<ActionResult> DeleteArticle(string slug)
+        {
+            string userName = GetUserNameClaim().Value;
+            await articleService.DeleteArticle(slug, userName);
+            return NoContent();
+        }
+
         private Claim GetUserNameClaim()
         {
             return User.Claims.FirstOrDefault(claim => claim.Type == "UserName");
