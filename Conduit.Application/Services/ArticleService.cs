@@ -113,6 +113,27 @@ namespace Conduit.Application.Services
             return commentDto;
         }
 
+        public async Task DeleteComment(int commentId, string slug, string CurrentUserName)
+        {
+            Comment comment = await GetComment(commentId);
+
+            checkUserPermission(CurrentUserName, comment.User.Username);
+
+            await commentRepository.DeleteAsync(comment);
+        }
+
+        private async Task<Comment> GetComment(int commentId)
+        {
+            try
+            {
+                return await commentRepository.GetCommentById(commentId);
+            }
+            catch (Exception)
+            {
+                throw new NotFoundException("The comment you're trying to delete doesn't exist");
+            }
+        }
+
         private Comment MapToComment(CommentCreationDto comment, Article article, User commentOwner)
         {
             Comment addedComment = mapper.Map<Comment>(comment);
