@@ -65,6 +65,11 @@ namespace Conduit.Application.Services
         {
             Article article = await GetArticle(slug);
 
+            if(CurrentUserName != article.User.Username)
+            {
+                throw new ForbiddenOperationException();
+            }
+
             string updatedTitle = articleUpdates.Title;
 
             article.Title = updatedTitle;
