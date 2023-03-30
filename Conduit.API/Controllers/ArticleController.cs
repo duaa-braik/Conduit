@@ -2,6 +2,7 @@
 using Conduit.Domain.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Conduit.API.Controllers
 {
@@ -20,7 +21,7 @@ namespace Conduit.API.Controllers
         [Authorize]
         public async Task<ActionResult<ArticleDto>> AddArticle(ArticleCreationDto article)
         {
-            var userName = User.Claims.FirstOrDefault(claim => claim.Type == "UserName")!.Value;
+            string userName = GetUserNameClaim().Value;
 
             var publishedArticle = await articleService.AddArticle(article, userName);
 
@@ -31,7 +32,7 @@ namespace Conduit.API.Controllers
         [Route("{slug}")]
         public async Task<ActionResult<ArticleDto>> GetArticle(string slug)
         {
-            var UserNameClaim = User.Claims.FirstOrDefault(claim => claim.Type == "UserName");
+            var UserNameClaim = GetUserNameClaim();
             ArticleDto article;
             if(UserNameClaim == null)
             {
@@ -42,6 +43,21 @@ namespace Conduit.API.Controllers
                 article = await articleService.GetArticle(slug, UserNameClaim.Value);
             }
             return Ok(article);
+        }
+
+        [HttpPut]
+        [Authorize]
+        [Route("{slug}")]
+        public async Task<ActionResult<ArticleDto>> Update(string slug, ArticleUpdateDto updates)
+        {
+            string userName = GetUserNameClaim().Value;
+            var a = await articleService.UpdateArticle(slug, updates, userName);
+            return Ok(a);
+        }
+
+        private Claim GetUserNameClaim()
+        {
+            return User.Claims.FirstOrDefault(claim => claim.Type == "UserName");
         }
     }
 }
