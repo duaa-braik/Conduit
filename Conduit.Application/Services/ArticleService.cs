@@ -15,17 +15,19 @@ namespace Conduit.Application.Services
         private readonly IMapper mapper;
         private readonly ITagRepository tagRepository;
         private readonly IProfileService profileService;
+        private readonly ICommentRepository commentRepository;
         private bool withRelatedData;
 
         public ArticleService
             (IArticleRepository articleRepository, IUserRepository userRepository, 
-            IMapper mapper, ITagRepository tagRepository, IProfileService profileService)
+            IMapper mapper, ITagRepository tagRepository, IProfileService profileService, ICommentRepository commentRepository)
         {
             this.articleRepository = articleRepository;
             this.userRepository = userRepository;
             this.mapper = mapper;
             this.tagRepository = tagRepository;
             this.profileService = profileService;
+            this.commentRepository = commentRepository;
         }
 
         public async Task<ArticleDto> AddArticle(ArticleCreationDto articleDetails, string Username)
@@ -93,6 +95,30 @@ namespace Conduit.Application.Services
             checkUserPermission(CurrentUserName, articleToDelete.User.Username);
 
             await articleRepository.DeleteAsync(articleToDelete);
+        }
+
+        public async Task<CommentDto> AddCommentAsync(CommentCreationDto comment, string slug, string CurrentUserName)
+        {
+            withRelatedData = false;
+
+            Article article = await GetArticle(slug, withRelatedData);
+            User commentOwner = await userRepository.GetUserByUsername(CurrentUserName);
+
+            Comment addedComment = MapToComment(comment, article, commentOwner);
+
+            await commentRepository.CreateAsync(addedComment);
+
+            CommentDto commentDto = mapper.Map<CommentDto>(addedComment);
+
+            return commentDto;
+        }
+
+        private Comment MapToComment(CommentCreationDto comment, Article article, User commentOwner)
+        {
+            Comment addedComment = mapper.Map<Comment>(comment);
+            addedComment.Article = article;
+            addedComment.User = commentOwner;
+            return addedComment;
         }
 
         private void CheckFollowStatusWithPublisher(User currentUser, int publisherId, ArticleDto articleDto)
