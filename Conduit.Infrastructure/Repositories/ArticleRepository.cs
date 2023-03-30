@@ -23,5 +23,13 @@ namespace Conduit.Infrastructure.Repositories
                 .Include(u => u.Tags)
                 .FirstAsync(a => a.Slug == slug);
         }
+
+        public override async Task<Article> UpdateAsync(Article article)
+        {
+            context.Article.Attach(article);
+            context.Entry(article).Property("Title").IsModified = true;
+            await context.SaveChangesAsync();
+            return article;
+        }
     }
 }

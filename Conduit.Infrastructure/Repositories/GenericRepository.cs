@@ -24,7 +24,7 @@ namespace Conduit.Infrastructure.Repositories
             await context.SaveChangesAsync();
         }
 
-        public async Task<T> UpdateAsync(T entity)
+        public async virtual Task<T> UpdateAsync(T entity)
         {
             context.Set<T>().Update(entity);
             await context.SaveChangesAsync();
