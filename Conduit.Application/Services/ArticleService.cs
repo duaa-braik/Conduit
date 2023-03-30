@@ -15,6 +15,7 @@ namespace Conduit.Application.Services
         private readonly IMapper mapper;
         private readonly ITagRepository tagRepository;
         private readonly IProfileService profileService;
+        private bool withRelatedData;
 
         public ArticleService
             (IArticleRepository articleRepository, IUserRepository userRepository, 
@@ -46,7 +47,8 @@ namespace Conduit.Application.Services
 
         public async Task<ArticleDto> GetArticle(string slug, [Optional] string CurrentUserName)
         {
-            Article article = await GetArticle(slug);
+            withRelatedData = true;
+            Article article = await GetArticle(slug, withRelatedData);
 
             var tags = article.Tags.Select(t => t.TagName).ToList();
 
@@ -63,12 +65,11 @@ namespace Conduit.Application.Services
 
         public async Task<ArticleDto> UpdateArticle(string slug, ArticleUpdateDto articleUpdates, string CurrentUserName)
         {
-            Article article = await GetArticle(slug);
+            withRelatedData = true;
 
-            if(CurrentUserName != article.User.Username)
-            {
-                throw new ForbiddenOperationException();
-            }
+            Article article = await GetArticle(slug, withRelatedData);
+
+            checkUserPermission(CurrentUserName, article.User.Username);
 
             string updatedTitle = articleUpdates.Title;
 
@@ -83,17 +84,35 @@ namespace Conduit.Application.Services
             return articleDto;
         }
 
+        public async Task DeleteArticle(string slug, string CurrentUserName)
+        {
+            withRelatedData = false;
+
+            Article articleToDelete = await GetArticle(slug, withRelatedData);
+
+            checkUserPermission(CurrentUserName, articleToDelete.User.Username);
+
+            await articleRepository.DeleteAsync(articleToDelete);
+        }
+
         private void CheckFollowStatusWithPublisher(User currentUser, int publisherId, ArticleDto articleDto)
         {
             bool isFollowing = profileService.CheckFollowStatus(publisherId, currentUser);
             articleDto.UserProfile.Following = isFollowing;
         }
 
-        private async Task<Article> GetArticle(string slug)
+        private async Task<Article> GetArticle(string slug, bool withRelatedData)
         {
             try
             {
-                return await articleRepository.GetArticleWithRelatedDataAsync(slug);
+                if (withRelatedData)
+                {
+                    return await articleRepository.GetArticleWithRelatedDataAsync(slug);
+                }
+                else
+                {
+                    return await articleRepository.GetArticle(slug);
+                }
             }
             catch (Exception)
             {
@@ -120,6 +139,14 @@ namespace Conduit.Application.Services
                 ArticleTags.Add(Tag);
             }
             await articleRepository.AddTagsToArticle(ArticleTags, article);
+        }
+
+        private static void checkUserPermission(string currentUserName, string publisherName)
+        {
+            if (currentUserName != publisherName)
+            {
+                throw new ForbiddenOperationException();
+            }
         }
     }
 }
