@@ -26,5 +26,22 @@ namespace Conduit.API.Controllers
 
             return Created($"/api/articles/{publishedArticle.Slug}", publishedArticle);
         }
+
+        [HttpGet]
+        [Route("{slug}")]
+        public async Task<ActionResult<ArticleDto>> GetArticle(string slug)
+        {
+            var UserNameClaim = User.Claims.FirstOrDefault(claim => claim.Type == "UserName");
+            ArticleDto article;
+            if(UserNameClaim == null)
+            {
+                article = await articleService.GetArticle(slug);
+            }
+            else
+            {
+                article = await articleService.GetArticle(slug, UserNameClaim.Value);
+            }
+            return Ok(article);
+        }
     }
 }
