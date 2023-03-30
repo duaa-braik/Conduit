@@ -2,7 +2,9 @@
 using Conduit.Application.Interfaces;
 using Conduit.Domain.DTOs;
 using Conduit.Domain.Entities;
+using Conduit.Domain.Exceptions;
 using Conduit.Domain.Interfaces;
+using System.Runtime.InteropServices;
 
 namespace Conduit.Application.Services
 {
@@ -12,14 +14,17 @@ namespace Conduit.Application.Services
         private readonly IUserRepository userRepository;
         private readonly IMapper mapper;
         private readonly ITagRepository tagRepository;
+        private readonly IProfileService profileService;
 
         public ArticleService
-            (IArticleRepository articleRepository, IUserRepository userRepository, IMapper mapper, ITagRepository tagRepository)
+            (IArticleRepository articleRepository, IUserRepository userRepository, 
+            IMapper mapper, ITagRepository tagRepository, IProfileService profileService)
         {
             this.articleRepository = articleRepository;
             this.userRepository = userRepository;
             this.mapper = mapper;
             this.tagRepository = tagRepository;
+            this.profileService = profileService;
         }
 
         public async Task<ArticleDto> AddArticle(ArticleCreationDto articleDetails, string Username)
@@ -37,6 +42,41 @@ namespace Conduit.Application.Services
             ArticleDto articleDto = mapper.Map<ArticleDto>(article);
 
             return articleDto;
+        }
+
+        public async Task<ArticleDto> GetArticle(string slug, [Optional] string CurrentUserName)
+        {
+            Article article = await GetArticle(slug);
+
+            var tags = article.Tags.Select(t => t.TagName).ToList();
+
+            ArticleDto articleDto = mapper.Map<ArticleDto>(article);
+
+            if (CurrentUserName != null)
+            {
+                User currentUser = await userRepository.GetUserWithFollowings(CurrentUserName);
+                CheckFollowStatusWithPublisher(currentUser, article.UserId, articleDto);
+            }
+
+            return articleDto;
+        }
+
+        private void CheckFollowStatusWithPublisher(User currentUser, int publisherId, ArticleDto articleDto)
+        {
+            bool isFollowing = profileService.CheckFollowStatus(publisherId, currentUser);
+            articleDto.UserProfile.Following = isFollowing;
+        }
+
+        private async Task<Article> GetArticle(string slug)
+        {
+            try
+            {
+                return await articleRepository.GetArticleAsync(slug);
+            }
+            catch (Exception)
+            {
+                throw new NotFoundException("The article you requested doesn't exist");
+            }
         }
 
 

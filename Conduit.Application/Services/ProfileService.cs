@@ -105,7 +105,7 @@ namespace Conduit.Application.Services
             
         }
 
-        private bool CheckFollowStatus(int userId, User currentUser)
+        public bool CheckFollowStatus(int userId, User currentUser)
         {
             return currentUser.Followings.Any(user => user.FolloweeId == userId);
         }
