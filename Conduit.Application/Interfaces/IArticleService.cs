@@ -9,6 +9,7 @@ namespace Conduit.Application.Interfaces
         Task<CommentDto> AddCommentAsync(CommentCreationDto comment, string slug, string CurrentUserName);
         Task DeleteArticle(string slug, string CurrentUserName);
         Task DeleteComment(int commentId, string slug, string CurrentUserName);
+        Task<ArticleDto> AddToFavorites(string slug, string currentUserName);
         Task<ArticleDto> GetArticle(string slug, [Optional] string CurrentUserName);
         Task<ArticleDto> UpdateArticle(string slug, ArticleUpdateDto articleUpdates, string CurrentUserName);
     }

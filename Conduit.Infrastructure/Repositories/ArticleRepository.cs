@@ -37,5 +37,11 @@ namespace Conduit.Infrastructure.Repositories
         {
             return await context.Article.Include(a => a.User).FirstAsync(a => a.Slug == slug);
         }
+
+        public async Task FavoriteArticle(Article article, User currentUser)
+        {
+            article.Favorites.Add(new UserArticle { User = currentUser, Article = article });
+            await context.SaveChangesAsync();
+        }
     }
 }

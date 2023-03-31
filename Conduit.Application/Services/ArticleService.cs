@@ -51,9 +51,7 @@ namespace Conduit.Application.Services
         {
             withRelatedData = true;
             Article article = await GetArticle(slug, withRelatedData);
-
-            var tags = article.Tags.Select(t => t.TagName).ToList();
-
+            
             ArticleDto articleDto = mapper.Map<ArticleDto>(article);
 
             if (CurrentUserName != null)
@@ -120,6 +118,23 @@ namespace Conduit.Application.Services
             checkUserPermission(CurrentUserName, comment.User.Username);
 
             await commentRepository.DeleteAsync(comment);
+        }
+
+        public async Task<ArticleDto> AddToFavorites(string slug, string currentUserName)
+        {
+            User currentUser = await userRepository.GetUserWithFollowings(currentUserName);
+
+            Article favoritedArticle = await GetArticle(slug, true);
+
+            await articleRepository.FavoriteArticle(favoritedArticle, currentUser);
+
+            var articleDto = mapper.Map<ArticleDto>(favoritedArticle);
+            
+            articleDto.Favorited = true;
+
+            CheckFollowStatusWithPublisher(currentUser, favoritedArticle.UserId, articleDto);
+
+            return articleDto;
         }
 
         private async Task<Comment> GetComment(int commentId)
