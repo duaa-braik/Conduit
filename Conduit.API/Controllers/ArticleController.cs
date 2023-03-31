@@ -95,6 +95,16 @@ namespace Conduit.API.Controllers
             return Ok(article);
         }
 
+        [HttpDelete]
+        [Authorize]
+        [Route("{slug}/favorites")]
+        public async Task<ActionResult> UnFavorite(string slug)
+        {
+            string userName = GetUserNameClaim().Value;
+            var article = await articleService.RemoveFromFavorites(slug, userName);
+            return Ok(article);
+        }
+
         private Claim GetUserNameClaim()
         {
             return User.Claims.FirstOrDefault(claim => claim.Type == "UserName");
