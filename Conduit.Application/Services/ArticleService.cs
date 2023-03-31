@@ -58,6 +58,8 @@ namespace Conduit.Application.Services
             {
                 User currentUser = await userRepository.GetUserWithFollowings(CurrentUserName);
                 CheckFollowStatusWithPublisher(currentUser, article.UserId, articleDto);
+                bool isFavorited = CheckArticleIfFavorited(article, currentUser);
+                articleDto.Favorited = isFavorited;
             }
 
             return articleDto;
@@ -126,6 +128,13 @@ namespace Conduit.Application.Services
 
             Article favoritedArticle = await GetArticle(slug, true);
 
+            bool isFavorited = CheckArticleIfFavorited(favoritedArticle, currentUser);
+
+            if (isFavorited)
+            {
+                throw new ConflictException("You already favorite this article");
+            }
+
             await articleRepository.FavoriteArticle(favoritedArticle, currentUser);
 
             var articleDto = mapper.Map<ArticleDto>(favoritedArticle);
@@ -143,6 +152,13 @@ namespace Conduit.Application.Services
 
             Article favoritedArticle = await GetArticle(slug, true);
 
+            bool isFavorited = CheckArticleIfFavorited(favoritedArticle, currentUser);
+
+            if (!isFavorited)
+            {
+                throw new ConflictException("You never favorite this article");
+            }
+
             await articleRepository.UnFavoriteArticle(favoritedArticle, currentUser);
 
             var articleDto = mapper.Map<ArticleDto>(favoritedArticle);
@@ -151,6 +167,11 @@ namespace Conduit.Application.Services
             CheckFollowStatusWithPublisher(currentUser, favoritedArticle.UserId, articleDto);
 
             return articleDto;
+        }
+
+        private bool CheckArticleIfFavorited(Article article, User user)
+        {
+            return article.Favorites.Any(f => f.UserId == user.UserId);
         }
 
         private async Task<Comment> GetComment(int commentId)
