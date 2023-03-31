@@ -137,6 +137,22 @@ namespace Conduit.Application.Services
             return articleDto;
         }
 
+        public async Task<ArticleDto> RemoveFromFavorites(string slug, string currentUserName)
+        {
+            User currentUser = await userRepository.GetUserWithFollowings(currentUserName);
+
+            Article favoritedArticle = await GetArticle(slug, true);
+
+            await articleRepository.UnFavoriteArticle(favoritedArticle, currentUser);
+
+            var articleDto = mapper.Map<ArticleDto>(favoritedArticle);
+            articleDto.Favorited = false;
+
+            CheckFollowStatusWithPublisher(currentUser, favoritedArticle.UserId, articleDto);
+
+            return articleDto;
+        }
+
         private async Task<Comment> GetComment(int commentId)
         {
             try

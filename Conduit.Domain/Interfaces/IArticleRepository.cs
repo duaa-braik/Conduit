@@ -8,5 +8,6 @@ namespace Conduit.Domain.Interfaces
         Task FavoriteArticle(Article article, User currentUser);
         Task<Article> GetArticle(string slug);
         Task<Article> GetArticleWithRelatedDataAsync(string slug);
+        Task UnFavoriteArticle(Article favoritedArticle, User currentUser);
     }
 }

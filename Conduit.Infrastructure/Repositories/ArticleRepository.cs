@@ -43,5 +43,12 @@ namespace Conduit.Infrastructure.Repositories
             article.Favorites.Add(new UserArticle { User = currentUser, Article = article });
             await context.SaveChangesAsync();
         }
+
+        public async Task UnFavoriteArticle(Article favoritedArticle, User currentUser)
+        {
+            var favorite = favoritedArticle.Favorites.FirstOrDefault(f => f.User == currentUser);
+            favoritedArticle.Favorites.Remove(favorite);
+            await context.SaveChangesAsync();
+        }
     }
 }
