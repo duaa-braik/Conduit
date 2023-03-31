@@ -34,7 +34,7 @@ namespace Conduit.API.Middlewares
                 message = ex.Message;
                 await HandleException(httpContext, statusCode, message);
             }
-            catch (FollowStatusMatchException ex)
+            catch (ConflictException ex)
             {
                 statusCode = (int) HttpStatusCode.Conflict;
                 message = ex.Message;
