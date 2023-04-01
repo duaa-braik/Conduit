@@ -199,7 +199,7 @@ namespace Conduit.Application.Services
 
             articles = await articleRepository.GetFeed(func, limit, offset, currentUser);
 
-            return mapper.Map<List<ArticleDto>>(articles);
+            return MapToArticleDtoList(articles, currentUser);
         }
 
         private void MapFollowAndFavoriteStatus(Article article, User currentUser, ArticleDto articleDto)
@@ -298,6 +298,19 @@ namespace Conduit.Application.Services
             {
                 throw new ForbiddenOperationException();
             }
+        }
+
+        private List<ArticleDto> MapToArticleDtoList(List<Article> articles, User currentUser)
+        {
+            var articlesDtos = new List<ArticleDto>();
+            articles.ForEach(a =>
+            {
+                var dto = mapper.Map<ArticleDto>(a);
+                MapFollowAndFavoriteStatus(a, currentUser, dto);
+                articlesDtos.Add(dto);
+            });
+
+            return articlesDtos;
         }
     }
 }
