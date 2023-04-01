@@ -1,7 +1,9 @@
 ﻿using Conduit.Application.Interfaces;
 using Conduit.Domain.DTOs;
+using Conduit.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.InteropServices;
 using System.Security.Claims;
 
 namespace Conduit.API.Controllers
@@ -103,6 +105,13 @@ namespace Conduit.API.Controllers
             string userName = GetUserNameClaim().Value;
             var article = await articleService.RemoveFromFavorites(slug, userName);
             return Ok(article);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetGlobalFeed(int limit, int offset, string? tag, string? author)
+        {
+            var globalFeed = await articleService.GetGlobalFeed(limit, offset, tag, author);
+            return Ok(globalFeed);
         }
 
         private Claim GetUserNameClaim()

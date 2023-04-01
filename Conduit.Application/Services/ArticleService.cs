@@ -4,6 +4,8 @@ using Conduit.Domain.DTOs;
 using Conduit.Domain.Entities;
 using Conduit.Domain.Exceptions;
 using Conduit.Domain.Interfaces;
+using System;
+using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 
 namespace Conduit.Application.Services
@@ -19,7 +21,7 @@ namespace Conduit.Application.Services
         private bool withRelatedData;
 
         public ArticleService
-            (IArticleRepository articleRepository, IUserRepository userRepository, 
+            (IArticleRepository articleRepository, IUserRepository userRepository,
             IMapper mapper, ITagRepository tagRepository, IProfileService profileService, ICommentRepository commentRepository)
         {
             this.articleRepository = articleRepository;
@@ -51,7 +53,7 @@ namespace Conduit.Application.Services
         {
             withRelatedData = true;
             Article article = await GetArticle(slug, withRelatedData);
-            
+
             ArticleDto articleDto = mapper.Map<ArticleDto>(article);
 
             if (CurrentUserName != null)
@@ -138,7 +140,7 @@ namespace Conduit.Application.Services
             await articleRepository.FavoriteArticle(favoritedArticle, currentUser);
 
             var articleDto = mapper.Map<ArticleDto>(favoritedArticle);
-            
+
             articleDto.Favorited = true;
 
             CheckFollowStatusWithPublisher(currentUser, favoritedArticle.UserId, articleDto);
@@ -167,6 +169,32 @@ namespace Conduit.Application.Services
             CheckFollowStatusWithPublisher(currentUser, favoritedArticle.UserId, articleDto);
 
             return articleDto;
+        }
+
+        public async Task<List<ArticleDto>> GetGlobalFeed
+            (int limit, int offset, string tag, string author)
+        {
+            List<Article> articles;
+
+            GetFilter(tag, author, out Expression<Func<Article, bool>>? filterExpression);
+
+            articles = await articleRepository.GetFeed(filterExpression, limit, offset);
+
+            return mapper.Map<List<ArticleDto>>(articles);
+        }
+
+        private static void GetFilter(string tag, string author, out Expression<Func<Article, bool>>? filterExpression)
+        {
+            filterExpression = null;
+
+            if (tag != null)
+            {
+                filterExpression = article => article.Tags.Any(t => t.TagName == tag);
+            }
+            else if (author != null)
+            {
+                filterExpression = article => article.User.Username == author;
+            }
         }
 
         private bool CheckArticleIfFavorited(Article article, User user)
