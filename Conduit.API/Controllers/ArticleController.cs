@@ -114,6 +114,16 @@ namespace Conduit.API.Controllers
             return Ok(globalFeed);
         }
 
+        [HttpGet]
+        [Authorize]
+        [Route("feed")]
+        public async Task<ActionResult> GetUserFeed(int limit, int offset, string? tag, string? author)
+        {
+            string userName = GetUserNameClaim().Value;
+            var feed = await articleService.GetUserFeed(limit, offset, tag, author, userName);
+            return Ok(feed);
+        }
+
         private Claim GetUserNameClaim()
         {
             return User.Claims.FirstOrDefault(claim => claim.Type == "UserName");

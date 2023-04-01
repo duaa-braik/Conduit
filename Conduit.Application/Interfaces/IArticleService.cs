@@ -14,5 +14,6 @@ namespace Conduit.Application.Interfaces
         Task<ArticleDto> UpdateArticle(string slug, ArticleUpdateDto articleUpdates, string CurrentUserName);
         Task<ArticleDto> RemoveFromFavorites(string slug, string currentUserName);
         Task<List<ArticleDto>> GetGlobalFeed(int limit, int offset, string tag, string author);
+        Task<List<ArticleDto>> GetUserFeed(int limit, int offset, string tag, string author, string currentUserName);
     }
 }

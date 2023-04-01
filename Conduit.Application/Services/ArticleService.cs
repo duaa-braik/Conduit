@@ -183,6 +183,20 @@ namespace Conduit.Application.Services
             return mapper.Map<List<ArticleDto>>(articles);
         }
 
+        public async Task<List<ArticleDto>> GetUserFeed
+            (int limit, int offset, string tag, string author, string currentUserName)
+        {
+            List<Article> articles;
+
+            GetFilter(tag, author, out Expression<Func<Article, bool>>? func);
+
+            User currentUser = await userRepository.GetUserWithFollowings(currentUserName);
+
+            articles = await articleRepository.GetFeed(func, limit, offset, currentUser);
+
+            return mapper.Map<List<ArticleDto>>(articles);
+        }
+
         private static void GetFilter(string tag, string author, out Expression<Func<Article, bool>>? filterExpression)
         {
             filterExpression = null;
