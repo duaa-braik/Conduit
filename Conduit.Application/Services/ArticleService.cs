@@ -49,20 +49,26 @@ namespace Conduit.Application.Services
             return articleDto;
         }
 
-        public async Task<ArticleDto> GetArticle(string slug, [Optional] string CurrentUserName)
+        public async Task<ArticleDto> GetArticle(string slug)
         {
             withRelatedData = true;
             Article article = await GetArticle(slug, withRelatedData);
 
             ArticleDto articleDto = mapper.Map<ArticleDto>(article);
 
-            if (CurrentUserName != null)
-            {
-                User currentUser = await userRepository.GetUserWithFollowings(CurrentUserName);
-                CheckFollowStatusWithPublisher(currentUser, article.UserId, articleDto);
-                bool isFavorited = CheckArticleIfFavorited(article, currentUser);
-                articleDto.Favorited = isFavorited;
-            }
+            return articleDto;
+        }
+
+        public async Task<ArticleDto> GetArticle(string slug, string CurrentUserName)
+        {
+            withRelatedData = true;
+            Article article = await GetArticle(slug, withRelatedData);
+
+            User currentUser = await userRepository.GetUserWithFollowings(CurrentUserName);
+
+            ArticleDto articleDto = mapper.Map<ArticleDto>(article);
+
+            MapFollowAndFavoriteStatus(article, currentUser, articleDto);
 
             return articleDto;
         }
@@ -143,7 +149,7 @@ namespace Conduit.Application.Services
 
             articleDto.Favorited = true;
 
-            CheckFollowStatusWithPublisher(currentUser, favoritedArticle.UserId, articleDto);
+            MapFollowAndFavoriteStatus(favoritedArticle, currentUser, articleDto);
 
             return articleDto;
         }
@@ -164,9 +170,8 @@ namespace Conduit.Application.Services
             await articleRepository.UnFavoriteArticle(favoritedArticle, currentUser);
 
             var articleDto = mapper.Map<ArticleDto>(favoritedArticle);
-            articleDto.Favorited = false;
 
-            CheckFollowStatusWithPublisher(currentUser, favoritedArticle.UserId, articleDto);
+            MapFollowAndFavoriteStatus(favoritedArticle, currentUser, articleDto);
 
             return articleDto;
         }
@@ -195,6 +200,12 @@ namespace Conduit.Application.Services
             articles = await articleRepository.GetFeed(func, limit, offset, currentUser);
 
             return mapper.Map<List<ArticleDto>>(articles);
+        }
+
+        private void MapFollowAndFavoriteStatus(Article article, User currentUser, ArticleDto articleDto)
+        {
+            articleDto.UserProfile.Following = CheckFollowStatusWithPublisher(currentUser, article.UserId, articleDto);
+            articleDto.Favorited = CheckArticleIfFavorited(article, currentUser);
         }
 
         private static void GetFilter(string tag, string author, out Expression<Func<Article, bool>>? filterExpression)
@@ -236,10 +247,9 @@ namespace Conduit.Application.Services
             return addedComment;
         }
 
-        private void CheckFollowStatusWithPublisher(User currentUser, int publisherId, ArticleDto articleDto)
+        private bool CheckFollowStatusWithPublisher(User currentUser, int publisherId, ArticleDto articleDto)
         {
-            bool isFollowing = profileService.CheckFollowStatus(publisherId, currentUser);
-            articleDto.UserProfile.Following = isFollowing;
+            return profileService.CheckFollowStatus(publisherId, currentUser);
         }
 
         private async Task<Article> GetArticle(string slug, bool withRelatedData)
