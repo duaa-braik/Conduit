@@ -124,6 +124,16 @@ namespace Conduit.API.Controllers
             return Ok(feed);
         }
 
+        [HttpGet]
+        [Authorize]
+        [Route("favorites")]
+        public async Task<ActionResult> GetFavoriteArticles(int limit, int offset)
+        {
+            string userName = GetUserNameClaim().Value;
+            var favoriteArticles = await articleService.GetFavorites(userName, limit, offset);
+            return Ok(favoriteArticles);
+        }
+
         private Claim GetUserNameClaim()
         {
             return User.Claims.FirstOrDefault(claim => claim.Type == "UserName");

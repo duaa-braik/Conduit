@@ -202,6 +202,15 @@ namespace Conduit.Application.Services
             return MapToArticleDtoList(articles, currentUser);
         }
 
+        public async Task<List<ArticleDto>> GetFavorites(string currentUserName, int limit, int offset)
+        {
+            User currentUser = await userRepository.GetUserWithFollowings(currentUserName);
+
+            List<Article> articles = await articleRepository.GetFavoriteArticles(currentUser, limit, offset);
+
+            return MapToArticleDtoList(articles, currentUser);
+        }
+
         private void MapFollowAndFavoriteStatus(Article article, User currentUser, ArticleDto articleDto)
         {
             articleDto.UserProfile.Following = CheckFollowStatusWithPublisher(currentUser, article.UserId, articleDto);
