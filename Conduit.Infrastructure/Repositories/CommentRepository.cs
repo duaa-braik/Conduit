@@ -12,5 +12,10 @@ namespace Conduit.Infrastructure.Repositories
         {
             return await context.Comments.Include(c => c.User).FirstAsync(c => c.CommentId == Id);
         }
+
+        public async Task<List<Comment>> GetComments(Article article)
+        {
+            return await context.Comments.Where(c => c.Article == article).ToListAsync();
+        }
     }
 }

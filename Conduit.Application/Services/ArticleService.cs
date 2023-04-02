@@ -211,6 +211,15 @@ namespace Conduit.Application.Services
             return MapToArticleDtoList(articles, currentUser);
         }
 
+        public async Task<List<CommentDto>> GetComments(string slug)
+        {
+            var article = await GetArticle(slug, false);
+
+            List<Comment> comments = await commentRepository.GetComments(article);
+
+            return mapper.Map<List<CommentDto>>(comments);
+        }
+
         private void MapFollowAndFavoriteStatus(Article article, User currentUser, ArticleDto articleDto)
         {
             articleDto.UserProfile.Following = CheckFollowStatusWithPublisher(currentUser, article.UserId, articleDto);

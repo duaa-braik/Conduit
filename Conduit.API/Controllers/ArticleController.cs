@@ -108,6 +108,14 @@ namespace Conduit.API.Controllers
         }
 
         [HttpGet]
+        [Route("{slug}/comments")]
+        public async Task<ActionResult<List<CommentDto>>> GetComments(string slug)
+        {
+            var comments = await articleService.GetComments(slug);
+            return Ok(comments);
+        }
+
+        [HttpGet]
         public async Task<ActionResult> GetGlobalFeed(int limit, int offset, string? tag, string? author)
         {
             var globalFeed = await articleService.GetGlobalFeed(limit, offset, tag, author);
