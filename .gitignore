@@ -2,3 +2,4 @@
 */bin
 .vs/
 Conduit.Domain.sln
+*.Designer.cs
