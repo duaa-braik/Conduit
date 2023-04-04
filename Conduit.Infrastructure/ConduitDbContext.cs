@@ -12,11 +12,9 @@ namespace Conduit.Infrastructure
         public DbSet<Follow> Follow { get; set; }
         public DbSet<UserArticle> UserArticle { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(
-                "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = Conduit");
-        }
+        public ConduitDbContext() { }
+
+        public ConduitDbContext(DbContextOptions<ConduitDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
