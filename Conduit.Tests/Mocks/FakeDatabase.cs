@@ -25,6 +25,8 @@ namespace Conduit.Tests.Mocks
             {
                 new Article { ArticleId = 1, Title = "Intro to computer science", Slug = "Intro-to-computer-science", UserId = 1, User = users[0] },
                 new Article { ArticleId = 2, Title = "Intro to computer engineering", Slug = "Intro-to-computer-engineering", UserId = 2, User = users[1] },
+                new Article { ArticleId = 3, Title = "Object-Oriented Programming", Slug = "Object-Oriented-Programming", UserId = 2, User = users[1] },
+
             };
 
             Follows = new List<Follow>

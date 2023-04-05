@@ -34,6 +34,12 @@ namespace Conduit.Tests.Mocks
                     article.User = users.First(u => u.UserId == article.UserId);
                     return article;
                 });
+
+            articleRepositoryMock.Setup(x => x.FavoriteArticle(It.IsAny<Article>(), It.IsAny<User>()))
+                .Callback((Article article, User user) =>
+                {
+                    article.Favorites.Add(new UserArticle { ArticleId = article.ArticleId, UserId = user.UserId });
+                });
         }
     }
 }
