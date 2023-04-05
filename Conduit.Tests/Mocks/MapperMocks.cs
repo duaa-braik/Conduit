@@ -55,6 +55,7 @@ namespace Conduit.Tests.Mocks
                     DatePublished = article.DatePublished,
                     LastModified = article.LastModified,
                     FavoritesCount = article.Favorites.Count,
+                    Slug = article.Slug,
                     TagList = article.Tags.Select(t => t.TagName).ToList(),
                     UserProfile = new UserProfileDto { Bio = article.User.Bio, UserName = article.User.Username }
                 });
