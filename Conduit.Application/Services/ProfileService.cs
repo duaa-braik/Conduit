@@ -53,7 +53,7 @@ namespace Conduit.Application.Services
 
             if (Users.IsFollowing)
             {
-                throw new FollowStatusMatchException("You already follow this user");
+                throw new ConflictException("You already follow this user");
             }
 
             var FollowedUser = await userRepository.FollowUser(Users.Followee, Users.Follower);
@@ -71,7 +71,7 @@ namespace Conduit.Application.Services
 
             if (!Users.IsFollowing)
             {
-                throw new FollowStatusMatchException("You don't follow this user");
+                throw new ConflictException("You don't follow this user");
             }
             var UnFollowedUser = await userRepository.UnFollowUser(Users.Followee, Users.Follower);
 
@@ -105,7 +105,7 @@ namespace Conduit.Application.Services
             
         }
 
-        private bool CheckFollowStatus(int userId, User currentUser)
+        public bool CheckFollowStatus(int userId, User currentUser)
         {
             return currentUser.Followings.Any(user => user.FolloweeId == userId);
         }
