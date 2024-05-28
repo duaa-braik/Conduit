@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,7 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <Compile Remove="Controllerd\**" />
+    <Content Remove="Controllerd\**" />
+    <EmbeddedResource Remove="Controllerd\**" />
+    <None Remove="Controllerd\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="FluentValidation" Version="11.5.1" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.15" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Conduit.Application\Conduit.Application.csproj" />
+    <ProjectReference Include="..\Conduit.Domain\Conduit.Domain.csproj" />
+    <ProjectReference Include="..\Conduit.Infrastructure\Conduit.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
