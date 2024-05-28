@@ -13,6 +13,7 @@ namespace Conduit.Domain.Profiles
             CreateMap<User, UserDto>();
             CreateMap<UserDto, UserAuthenticationDto>();
             CreateMap<UserUpdateDto, User>();
+            CreateMap<User, UserProfileDto>();
         }
     }
 }

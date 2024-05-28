@@ -12,5 +12,37 @@ namespace Conduit.Infrastructure.Repositories
         {
             return await context.User.FirstAsync(user => user.Email == email);
         }
+
+        public async Task<User> GetUserByUsername(string username)
+        {
+            return await context.User.FirstAsync(user => user.Username == username);
+        }
+
+        public async Task<User> GetUserWithFollowings(string Username)
+        {
+            return await context.User
+                .Include(user => user.Followings)
+                .FirstAsync(user => user.Username == Username);
+        }
+
+        public async Task<User> FollowUser(User userToFollow, User CurrentUser)
+        {
+            CurrentUser.Followings.Add(new Follow
+            {
+                Followee = userToFollow,
+                Follower = CurrentUser
+            });
+
+            await context.SaveChangesAsync();
+            return userToFollow;
+        }
+
+        public async Task<User> UnFollowUser(User userToUnFollow, User CurrentUser)
+        {
+            var FollowRelation = CurrentUser.Followings.FirstOrDefault(f => f.Followee == userToUnFollow);
+            CurrentUser.Followings.Remove(FollowRelation);
+            await context.SaveChangesAsync();
+            return userToUnFollow;
+        }
     }
 }

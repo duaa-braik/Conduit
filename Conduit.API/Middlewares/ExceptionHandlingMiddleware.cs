@@ -34,6 +34,24 @@ namespace Conduit.API.Middlewares
                 message = ex.Message;
                 await HandleException(httpContext, statusCode, message);
             }
+            catch (ConflictException ex)
+            {
+                statusCode = (int) HttpStatusCode.Conflict;
+                message = ex.Message;
+                await HandleException(httpContext, statusCode, message);
+            }
+            catch (NotFoundException ex) 
+            {
+                statusCode = (int) HttpStatusCode.NotFound;
+                message = ex.Message;
+                await HandleException(httpContext, statusCode, message);
+            }
+            catch (ForbiddenOperationException)
+            {
+                statusCode = (int)HttpStatusCode.Forbidden;
+                message = "You don't have permissions for this operations";
+                await HandleException(httpContext, statusCode, message);
+            }
         }
 
         private async Task HandleException(HttpContext httpContext, int statusCode, string errorMessage)
